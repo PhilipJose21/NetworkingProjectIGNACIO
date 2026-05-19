@@ -7,10 +7,10 @@ public class MuliplayerMenu : MonoBehaviour
 
     private void Awake()
     {
-        if (hideClientButtons == null)
-        {
-            hideClientButtons = FindObjectOfType<HideClientButtons>();
-        }
+        // if (hideClientButtons == null)
+        // {
+        //     hideClientButtons = FindObjectOfType<HideClientButtons>();
+        // }
     }
     public void StartHost()
     {

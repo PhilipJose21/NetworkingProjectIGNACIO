@@ -1,6 +1,9 @@
 using UnityEngine;
 using Unity.Netcode;
 using System;
+using UnityEngine.UI;
+using TMPro;
+// removed invalid using Unity.Random; Random is in UnityEngine
 
 public class SpawnPointManager : NetworkBehaviour
 {
@@ -19,11 +22,12 @@ public class SpawnPointManager : NetworkBehaviour
         GameObject[] spawnPointObjects = GameObject.FindGameObjectsWithTag("SpawnPoint");
         if (spawnPointObjects.Length == 0)
         {
-            Debug.Log("No Sppawnpoint detected");
+            Debug.Log("No SpawnPoint detected");
             return;
         }
+        int randomIndex = UnityEngine.Random.Range(0, spawnPointObjects.Length);
 
-        Transform selectedSpawnPoint = spawnPointObjects[nextSpawnIndex].transform;
+        Transform selectedSpawnPoint = spawnPointObjects[randomIndex].transform;
         CharacterController characterController = GetComponent<CharacterController>();
 
         //temporarily disables the characterController
