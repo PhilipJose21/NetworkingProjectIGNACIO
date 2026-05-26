@@ -6,6 +6,7 @@ public class NetworkPlayerController : NetworkBehaviour
     [SerializeField] float moveSpeed = 5f;
     [SerializeField] float gravity = -9.81f;
     [SerializeField] float groundedGravity = -2f;
+    [SerializeField] float jumpHeight = 1.5f;
 
     private CharacterController characterController;
     private float verticalVelocity;
@@ -27,27 +28,32 @@ public class NetworkPlayerController : NetworkBehaviour
         if(!IsOwner) return;
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
+        bool jumpPressed = Input.GetButtonDown("Jump");
         Vector2 inputDirection = new Vector2(horizontalInput, verticalInput);
         if (IsServer)
         {
-            MovePlayer(inputDirection);
+            MovePlayer(inputDirection, jumpPressed);
         }
         else
         {
-            MovePlayerRPC(inputDirection);
+            MovePlayerRPC(inputDirection, jumpPressed);
         }
     }
     [Rpc(SendTo.Server)]
 
-    private void MovePlayerRPC(Vector2 inputDirection)
+    private void MovePlayerRPC(Vector2 inputDirection, bool jumpPressed)
     {
-        MovePlayer(inputDirection);
+        MovePlayer(inputDirection, jumpPressed);
     }
-    private void MovePlayer(Vector2 movementInput)
+    private void MovePlayer(Vector2 movementInput, bool jumpPressed)
     {
         if (characterController.isGrounded && verticalVelocity < 0)
         {
             verticalVelocity = groundedGravity;
+            if (jumpPressed)
+            {
+                verticalVelocity = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            }
         }
         else
         {
