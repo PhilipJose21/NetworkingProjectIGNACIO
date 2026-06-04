@@ -19,15 +19,22 @@ public class SpawnPointManager : NetworkBehaviour
             return;
         }
 
-        GameObject[] spawnPointObjects = GameObject.FindGameObjectsWithTag("SpawnPoint");
-        if (spawnPointObjects.Length == 0)
+        if (IsOwner)
         {
-            Debug.Log("No SpawnPoint detected");
-            return;
+            GameObject player1SpawnPoint = GameObject.FindGameObjectWithTag("PlayerSpawn");
+            setSpawn(player1SpawnPoint);
         }
-        int randomIndex = UnityEngine.Random.Range(0, spawnPointObjects.Length);
+        else if (IsClient)
+        {
+            GameObject player2SpawnPoint = GameObject.FindGameObjectWithTag("Player2Spawn");
+            setSpawn(player2SpawnPoint);
+        }
 
-        Transform selectedSpawnPoint = spawnPointObjects[randomIndex].transform;
+    }
+
+    public void setSpawn(GameObject spawnPoints)
+    {
+        Transform selectedSpawnPoint = spawnPoints.transform;
         CharacterController characterController = GetComponent<CharacterController>();
 
         //temporarily disables the characterController
@@ -43,13 +50,8 @@ public class SpawnPointManager : NetworkBehaviour
         {
             characterController.enabled = true;
         }
-
-        nextSpawnIndex++;
-        if (nextSpawnIndex >= spawnPointObjects.Length)
-        {
-            nextSpawnIndex = 0;
-        }
     }
+
     void Start()
     {
         

@@ -101,6 +101,37 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!1 &7404213694642200693
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9205491428486445100}
+  m_Layer: 0
+  m_Name: BulletSpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9205491428486445100
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7404213694642200693}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.074, y: 0.17749001, z: 1.164}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5550968544693812227}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8408052405981611901
 GameObject:
   m_ObjectHideFlags: 0
@@ -120,6 +151,7 @@ GameObject:
   - component: {fileID: 3992457666535872596}
   - component: {fileID: 1768264696960520387}
   - component: {fileID: -4811060299145027979}
+  - component: {fileID: 527237316429246213}
   - component: {fileID: -7974319479414814303}
   - component: {fileID: 8613023799879776559}
   m_Layer: 6
@@ -143,6 +175,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 887142460520784876}
+  - {fileID: 9205491428486445100}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &2760532486112204528
@@ -262,7 +295,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 4233215829
+  GlobalObjectIdHash: 3827677862
   InScenePlacedSourceGlobalObjectIdHash: 3046972159
   DeferredDespawnTick: 0
   Ownership: 1
@@ -351,6 +384,7 @@ MonoBehaviour:
   gravity: -9.81
   groundedGravity: -2
   jumpHeight: 1.5
+  points: 0
 --- !u!114 &1768264696960520387
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -382,6 +416,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LocalPlayerCameraTarget
   ShowTopMostFoldoutHeaderGroup: 1
+--- !u!114 &527237316429246213
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8408052405981611901}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2ddcbe48f6e1514a9d32bee1b34fa81, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NetworkPlayerShooter
+  ShowTopMostFoldoutHeaderGroup: 1
+  projectilePrefab: {fileID: 2175582801810943914, guid: d8bd3a8ab4bfdd2429f51a72c3381fe9, type: 3}
+  bulletSpawnPoint: {fileID: 9205491428486445100}
+  fireCooldown: 0.5
+  fireKey: 324
 --- !u!114 &-7974319479414814303
 MonoBehaviour:
   m_ObjectHideFlags: 0

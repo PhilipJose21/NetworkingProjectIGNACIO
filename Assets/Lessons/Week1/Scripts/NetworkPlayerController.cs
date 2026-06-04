@@ -7,6 +7,7 @@ public class NetworkPlayerController : NetworkBehaviour
     [SerializeField] float gravity = -9.81f;
     [SerializeField] float groundedGravity = -2f;
     [SerializeField] float jumpHeight = 1.5f;
+    public int points = 0;
 
     private CharacterController characterController;
     private float verticalVelocity;
