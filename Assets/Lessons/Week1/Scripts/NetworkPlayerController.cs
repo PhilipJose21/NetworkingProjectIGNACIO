@@ -71,9 +71,6 @@ public class NetworkPlayerController : NetworkBehaviour
     {
         points.Value += 1;
     }
-
-    // Call this from the owning client when this player gets a kill.
-    // Example: killer.GetComponent<NetworkPlayerController>().AddPointServerRpc();
     [ServerRpc]
     public void AddPointServerRpc()
     {

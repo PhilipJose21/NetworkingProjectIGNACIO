@@ -3,7 +3,6 @@ using Unity.Netcode;
 
 public class GameManager : NetworkBehaviour
 {
-    // Singleton pattern so players can easily reference it
     public static GameManager Instance { get; private set; }
 
     private void Awake()
@@ -29,16 +28,13 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     private void ResetAllPlayersClientRpc()
     {
-        // Find all player objects currently in the match
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
 
         foreach (GameObject player in players)
         {
-            // Try to use the SpawnPointManager attached to the player to handle the teleport safely
             SpawnPointManager spawnManager = player.GetComponent<SpawnPointManager>();
             if (spawnManager != null)
             {
-                // Re-evaluate their spawn based on whether they are Player 1 (Host/Server Owner) or Player 2 (Client)
                 if (spawnManager.IsOwner && spawnManager.IsServer)
                 {
                     GameObject p1Spawn = GameObject.FindGameObjectWithTag("PlayerSpawn");
@@ -52,7 +48,6 @@ public class GameManager : NetworkBehaviour
             }
             else
             {
-                // Fallback if SpawnPointManager is missing or you prefer a random fallback spawn point
                 NetworkPlayerHealth health = player.GetComponent<NetworkPlayerHealth>();
                 if (health != null)
                 {

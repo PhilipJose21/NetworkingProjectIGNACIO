@@ -7,8 +7,8 @@ public class NetworkPlayerHealth : NetworkBehaviour
     [SerializeField] private int maxHealth = 100;
     private NetworkVariable<int> currentHealth = new NetworkVariable<int>(
         100,
-        NetworkVariableReadPermission.Everyone, //The host, client and server can read this variable
-        NetworkVariableWritePermission.Server //Only the server can write to this variable
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server
     );
     public Transform damagePopupSpawnPoint;
     public GameObject damagePopupPrefab;
@@ -49,8 +49,6 @@ public class NetworkPlayerHealth : NetworkBehaviour
                 else
                 {
                     GameObject popup = null;
-
-                    // Instantiate under spawn point if provided, otherwise standalone
                     if (damagePopupSpawnPoint != null)
                     {
                         popup = Instantiate(damagePopupPrefab, damagePopupSpawnPoint);
@@ -62,7 +60,6 @@ public class NetworkPlayerHealth : NetworkBehaviour
 
                     if (popup != null)
                     {
-                        // normalize RectTransform for UI prefabs
                         RectTransform rt = popup.GetComponent<RectTransform>();
                         if (rt != null)
                         {
@@ -77,7 +74,6 @@ public class NetworkPlayerHealth : NetworkBehaviour
                             popup.transform.localScale = Vector3.one;
                         }
 
-                        // Set the popup text: support both legacy `Text` and TextMeshPro (`TextMeshProUGUI`)
                         Text uiText = popup.GetComponentInChildren<Text>(true);
                         if (uiText != null)
                         {
@@ -99,7 +95,7 @@ public class NetworkPlayerHealth : NetworkBehaviour
 
     public void TakeDamage(int damageAmount, GameObject damageSource)
     {
-        if (!IsServer) { return; } // Confirmed: We are running on the Server!
+        if (!IsServer) { return; } 
         
         currentHealth.Value -= damageAmount;
         takenDamage = damageAmount;
@@ -108,13 +104,10 @@ public class NetworkPlayerHealth : NetworkBehaviour
         
         if (currentHealth.Value <= 0)
         {
-            // FIX: Directly award the point on the server instead of invoking an RPC
             if (damageSource != null)
             {
                 NetworkPlayerController attacker = damageSource.GetComponent<NetworkPlayerController>();
                 
-                // If the script is on a child object of the player (like a weapon/projectile), 
-                // check the parent components as a fallback
                 if (attacker == null)
                 {
                     attacker = damageSource.GetComponentInParent<NetworkPlayerController>();
@@ -131,11 +124,9 @@ public class NetworkPlayerHealth : NetworkBehaviour
                 }
             }
 
-            // Reset health for the next round
             currentHealth.Value = maxHealth;
             HealthBar();
 
-            // Tell the global GameManager to reset everyone across the network
             if (GameManager.Instance != null)
             {
                 GameManager.Instance.ReportPlayerDeath();

@@ -20,7 +20,6 @@ public class PointSystem : MonoBehaviour
 
     void OnEnable()
     {
-        // Subscribe to scene loading events so we know when the new scene is ready
         if (NetworkManager.Singleton != null && NetworkManager.Singleton.SceneManager != null)
         {
             NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += OnSceneLoadComplete;
@@ -29,7 +28,6 @@ public class PointSystem : MonoBehaviour
 
     void OnDisable()
     {
-        // Clean up our listener when destroyed or disabled
         if (NetworkManager.Singleton != null && NetworkManager.Singleton.SceneManager != null)
         {
             NetworkManager.Singleton.SceneManager.OnLoadEventCompleted -= OnSceneLoadComplete;
@@ -100,33 +98,35 @@ public class PointSystem : MonoBehaviour
 
         if (NetworkManager.Singleton.IsServer)
         {
-            // Just trigger the scene load. DO NOT reset positions here yet, 
-            // because the spawn points don't exist in the old scene state!
             NetworkManager.Singleton.SceneManager.LoadScene("Week1", UnityEngine.SceneManagement.LoadSceneMode.Single);
         }
     }
 
-    // This runs automatically on both server and client AFTER the scene reloads completely
     private void OnSceneLoadComplete(string sceneName, UnityEngine.SceneManagement.LoadSceneMode loadSceneMode, System.Collections.Generic.List<ulong> clientsCompleted, System.Collections.Generic.List<ulong> clientsTimedOut)
     {
-        // Make sure we are responding to our intended lobby scene
         if (sceneName == "Week1")
         {
-            // Clean up the local UI elements completely
+            if (player1PointsText != null) player1PointsText.text = "0";
+            if (player2PointsText != null) player2PointsText.text = "0";
+
             if (player1WinText != null) player1WinText.SetActive(false);
             if (player2WinText != null) player2WinText.SetActive(false);
-            isMatchOver = false;
 
-            // Only the server should modify network variables and move player components
             if (NetworkManager.Singleton.IsServer)
             {
-                ResetAndPositionPlayers();
+                StartCoroutine(ServerResetRoutine());
+            }
+            else
+            {
+                isMatchOver = false;
             }
         }
     }
 
-    private void ResetAndPositionPlayers()
+    private IEnumerator ServerResetRoutine()
     {
+        yield return null;
+
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         
         foreach (GameObject player in players)
@@ -134,22 +134,18 @@ public class PointSystem : MonoBehaviour
             var netObj = player.GetComponent<NetworkObject>();
             if (netObj == null) continue;
 
-            // 1. Clear their points back to zero
             var controller = player.GetComponent<NetworkPlayerController>();
             if (controller != null)
             {
                 controller.points.Value = 0;
             }
 
-            // 2. Refill health back to maximum
             var health = player.GetComponent<NetworkPlayerHealth>();
             if (health != null)
             {
-                // We access the health system directly to reset parameters safely
                 health.Respawn(); 
             }
 
-            // 3. Force them to update positions based on fresh spawn tags in the clean scene
             var spawnManager = player.GetComponent<SpawnPointManager>();
             if (spawnManager != null)
             {
@@ -165,5 +161,7 @@ public class PointSystem : MonoBehaviour
                 }
             }
         }
+
+        isMatchOver = false;
     }
 }

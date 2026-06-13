@@ -6,10 +6,10 @@ public class NetworkProjectile : NetworkBehaviour
     [SerializeField] private float speed = 10f;
     [SerializeField] private float lifetime = 5f;
     private float despawnTime;
-    private int despawnTimeInitialized; // placeholder if needed later
+    private int despawnTimeInitialized;
     [HideInInspector]
-    public int damageAmount = 5; // assigned by spawner before Spawn()
-    public GameObject owner; // assigned by spawner before Spawn()
+    public int damageAmount = 5;
+    public GameObject owner;
     public override void OnNetworkSpawn()
     {
         if (IsServer)
