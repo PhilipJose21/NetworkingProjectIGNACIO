@@ -11,7 +11,7 @@ public class PointSystem : MonoBehaviour
     public GameObject player1WinText, player2WinText;
 
     private bool isMatchOver = false;
-    
+    public int pointsToWin = 3;
     void Start()
     {
         player1WinText.SetActive(false);
@@ -73,14 +73,14 @@ public class PointSystem : MonoBehaviour
                     player1PointsText.text = p1Controller.points.Value.ToString();
                     player2PointsText.text = p2Controller.points.Value.ToString();
 
-                    if (p1Controller.points.Value >= 10)
+                    if (p1Controller.points.Value >= pointsToWin)
                     {
                         Debug.Log("Player 1 (Host) Wins!");
                         isMatchOver = true;
                         player1WinText.SetActive(true);
                         StartCoroutine(returnToLobby());
                     }
-                    else if (p2Controller.points.Value >= 10)
+                    else if (p2Controller.points.Value >= pointsToWin)
                     {
                         Debug.Log("Player 2 (Client) Wins!");
                         isMatchOver = true;
