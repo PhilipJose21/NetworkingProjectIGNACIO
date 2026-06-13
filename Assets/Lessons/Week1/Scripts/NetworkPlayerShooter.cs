@@ -28,7 +28,17 @@ public class NetworkPlayerShooter : NetworkBehaviour
     private void RequestShootServerRpc(Vector3 spawnPosition, Vector3 spawnDirection)
     {
         GameObject projectile = Instantiate(projectilePrefab, spawnPosition, Quaternion.LookRotation(spawnDirection));
+        projectile.GetComponent<NetworkProjectile>().owner = gameObject;
         NetworkObject networkObject = projectile.GetComponent<NetworkObject>();
-        networkObject.Spawn();
+        // Assign damage from the player's NetworkPlayerAttack (if available)
+        NetworkProjectile projScript = projectile.GetComponent<NetworkProjectile>();
+        NetworkPlayerAttack attack = GetComponent<NetworkPlayerAttack>();
+        if (projScript != null)
+        {
+            projScript.damageAmount = attack != null ? attack.damageAmount : projScript.damageAmount;
+        }
+
+        // Spawn the projectile on the server and assign ownership to the firing player
+        networkObject.SpawnWithOwnership(OwnerClientId);
     }
 }

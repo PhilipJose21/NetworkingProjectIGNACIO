@@ -19,14 +19,16 @@ public class MultiplayerMenuV2 : NetworkBehaviour
 
 
     [Header("Relay Settings")]
-    [SerializeField] private int maxConnections = 8; // This includes host
+    [SerializeField] private int maxConnections = 2; // This includes host
 
     private const string WebGLConnectionType = "wss";
+    public GameObject healthBar;
 
     private async void Start()
     {
         await InitializeUnityServices();
         displayJoinCode.SetActive(false);
+        healthBar.SetActive(false);
     }
 
     private async System.Threading.Tasks.Task InitializeUnityServices()
@@ -161,6 +163,7 @@ public class MultiplayerMenuV2 : NetworkBehaviour
         if (menuUI != null)
         {
             menuUI.SetActive(false);
+            ShowHealthBar();
         }
     }
 
@@ -172,5 +175,10 @@ public class MultiplayerMenuV2 : NetworkBehaviour
         {
             statusText.text = message;
         }
+    }
+
+    public void ShowHealthBar()
+    {
+        healthBar.SetActive(true);
     }
 }

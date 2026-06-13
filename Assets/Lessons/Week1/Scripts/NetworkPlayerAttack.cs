@@ -4,7 +4,7 @@ using Unity.Netcode;
 public class NetworkPlayerAttack : NetworkBehaviour
 {
 
-    [SerializeField] private int damageAmount = 10;
+    [SerializeField] public int damageAmount = 10;
     [SerializeField] private float attackRange = 2f;
     [SerializeField] private LayerMask damageableLayers;
     [SerializeField] KeyCode playerAttackKey = KeyCode.Mouse0;
@@ -25,7 +25,7 @@ public class NetworkPlayerAttack : NetworkBehaviour
     }
 
     [ServerRpc]
-    private void RequestAttackServerRpc()
+    public void RequestAttackServerRpc()
     {
         Debug.Log($"ServerRpc: attack requested by object {gameObject.name}");
         Vector3 attackCenter = transform.position + transform.forward * attackRange;
@@ -38,10 +38,11 @@ public class NetworkPlayerAttack : NetworkBehaviour
             NetworkPlayerHealth health = hit.GetComponent<NetworkPlayerHealth>();
             if (health != null)
             {
-                health.TakeDamage(damageAmount);
+                health.TakeDamage(damageAmount, gameObject);
                 break;
             }
         }
+
 
         
     }

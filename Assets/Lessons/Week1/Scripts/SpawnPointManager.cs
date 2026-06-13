@@ -3,6 +3,7 @@ using Unity.Netcode;
 using System;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections;
 // removed invalid using Unity.Random; Random is in UnityEngine
 
 public class SpawnPointManager : NetworkBehaviour
@@ -10,7 +11,6 @@ public class SpawnPointManager : NetworkBehaviour
     //stores which spawn point should be used next
     //static means all player objects share this value
     private static int nextSpawnIndex;
-
     //runs when the player object is spawned by netcode
     public override void OnNetworkSpawn()
     {

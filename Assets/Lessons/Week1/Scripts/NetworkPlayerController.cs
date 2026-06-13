@@ -7,8 +7,8 @@ public class NetworkPlayerController : NetworkBehaviour
     [SerializeField] float gravity = -9.81f;
     [SerializeField] float groundedGravity = -2f;
     [SerializeField] float jumpHeight = 1.5f;
-    public int points = 0;
-
+    public NetworkVariable<int> points = new NetworkVariable<int>(0);
+    
     private CharacterController characterController;
     private float verticalVelocity;
 
@@ -65,5 +65,25 @@ public class NetworkPlayerController : NetworkBehaviour
         Vector3 verticalMovement = Vector3.up * verticalVelocity;
         Vector3 finalMovement = horizontalMovement + verticalMovement;
         characterController.Move(finalMovement * Time.deltaTime);
+    }
+
+    public void AddPointDirect()
+    {
+        points.Value += 1;
+    }
+
+    // Call this from the owning client when this player gets a kill.
+    // Example: killer.GetComponent<NetworkPlayerController>().AddPointServerRpc();
+    [ServerRpc]
+    public void AddPointServerRpc()
+    {
+        points.Value++;
+        Debug.Log($"Player {OwnerClientId} scored! Total points: {points.Value}");
+    }
+
+    // Helper to read points on any side
+    public int GetPoints()
+    {
+        return points.Value;
     }
 }
